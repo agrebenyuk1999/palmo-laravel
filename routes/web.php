@@ -22,13 +22,14 @@ Route::get('/', function () {
 Route::group([
     'as' => 'tasks.',
     'prefix' => 'tasks',
-], function() {
+    'middleware' => 'auth'
+], function () {
     Route::get('/', [TaskController::class, 'index'])->name('index');
     Route::get('/create', [TaskController::class, 'create'])->name('create');
     Route::post('/', [TaskController::class, 'store'])->name('store');
     Route::get('/{task}', [TaskController::class, 'show'])->name('show');
     Route::get('/{task}/edit', [TaskController::class, 'edit'])->name('edit');
-    Route::put('/{task}', [TaskController::class, 'update'])->name('edit');
+    Route::put('/{task}', [TaskController::class, 'update'])->name('update');
     Route::delete('/{task}', [TaskController::class, 'destroy'])->name('destroy');
 });
 
@@ -43,3 +44,6 @@ Route::group([
 //    Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 //});
 
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

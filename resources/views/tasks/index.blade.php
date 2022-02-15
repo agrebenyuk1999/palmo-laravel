@@ -13,9 +13,16 @@
                             <h5 class="card-title">{{ $task->name }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ $task->category->name }}</h6>
                             <p class="card-text">{{ $task->description }}</p>
-                            <a href="#" class="card-link">Редактировать</a>
-                            <a href="#" class="card-link">Удалить</a>
+                            <a href="{{ route("tasks.edit", ['task' => $task->id]) }}"
+                               class="card-link">Редактировать</a>
                             <a href="{{ route("tasks.show", ['task' => $task->id]) }}" class="card-link">Перейти</a>
+
+                            <form action="{{ route('tasks.destroy', ['task' => $task->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Удалить</button>
+                            </form>
+
                         </div>
                     </div>
                 </div>

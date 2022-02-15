@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -22,13 +24,10 @@ class TaskController extends Controller
         return view('tasks.create', ['categories' => $categories]);
     }
 
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
-        Task::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'category_id' => $request->category
-        ]);
+        $data = $request->except('_token');
+        Task::create($data);
 
         return redirect()->route('tasks.index');
     }
@@ -42,18 +41,26 @@ class TaskController extends Controller
 
     public function edit($id)
     {
+        $task = Task::find($id);
+        $categories = Category::all();
 
+        return view('tasks.edit', ['task' => $task, 'categories' => $categories]);
     }
 
     public function update(Request $request, $id)
     {
+        $data = $request->except('_token', '_method');
+        $task = Task::find($id);
+        $task->update($data);
 
+        return redirect()->route('tasks.show', ['task' => $id]);
     }
 
     public function destroy($id)
     {
         $task = Task::find($id);
-
         $task->delete();
+
+        return redirect()->route('tasks.index');
     }
 }
