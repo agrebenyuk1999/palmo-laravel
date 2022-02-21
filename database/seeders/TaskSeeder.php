@@ -16,15 +16,24 @@ class TaskSeeder extends Seeder
      */
     public function run()
     {
-        $categoryIds = DB::table('categories')->pluck('id')->toArray();
-
         for ($i = 0; $i <= 9; $i++) {
             DB::table('tasks')->insert([
                 'name' => Str::random(10),
                 'description' => Str::random(30),
-                'category_id' => $categoryIds[array_rand($categoryIds)],
                 'created_at' => Carbon::parse(),
             ]);
+        }
+
+        $tasks = DB::table('tasks')->get();
+        $categoryIds = DB::table('categories')->pluck('id')->toArray();
+
+        foreach ($tasks as $task) {
+            for ($i = 0; $i <= rand(0, 2); $i++) {
+                DB::table('category_task')->insert([
+                    'task_id' => $task->id,
+                    'category_id' => $categoryIds[array_rand($categoryIds)]
+                ]);
+            }
         }
     }
 }

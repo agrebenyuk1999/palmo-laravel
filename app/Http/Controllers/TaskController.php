@@ -26,8 +26,13 @@ class TaskController extends Controller
 
     public function store(TaskRequest $request)
     {
-        $data = $request->except('_token');
-        Task::create($data);
+        $data = $request->except('_token', 'categories');
+
+        $data['image'] = $request->file('image')->store('images');
+
+        $task = Task::create($data);
+        $task->categories()->sync($request->categories);
+
 
         return redirect()->route('tasks.index');
     }
@@ -43,15 +48,16 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         $categories = Category::all();
-
+//        dd($task->categories);
         return view('tasks.edit', ['task' => $task, 'categories' => $categories]);
     }
 
-    public function update(Request $request, $id)
+    public function update(TaskRequest $request, $id)
     {
-        $data = $request->except('_token', '_method');
+        $data = $request->except('_token', '_method', 'categories');
         $task = Task::find($id);
         $task->update($data);
+        $task->categories()->sync($request->categories);
 
         return redirect()->route('tasks.show', ['task' => $id]);
     }

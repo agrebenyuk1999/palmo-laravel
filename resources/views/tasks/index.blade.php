@@ -11,7 +11,9 @@
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">{{ $task->name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ $task->category->name }}</h6>
+                            @foreach($task->categories as $taskCategory)
+                                <h6 class="card-subtitle mb-2 text-muted">{{$taskCategory->name }}</h6>
+                            @endforeach
                             <p class="card-text">{{ $task->description }}</p>
                             <a href="{{ route("tasks.edit", ['task' => $task->id]) }}"
                                class="card-link">Редактировать</a>
