@@ -5,14 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TaskRequest;
 use App\Models\Category;
 use App\Models\Task;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Services\TaskService;
 
 class TaskController extends Controller
 {
+    private $service;
+
+    public function __construct(TaskService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = $this->service->index();
 
         return view('tasks.index', ['tasks' => $tasks]);
     }
@@ -26,13 +32,7 @@ class TaskController extends Controller
 
     public function store(TaskRequest $request)
     {
-        $data = $request->except('_token', 'categories');
-
-        $data['image'] = $request->file('image')->store('images');
-
-        $task = Task::create($data);
-        $task->categories()->sync($request->categories);
-
+        $this->service->store($request);
 
         return redirect()->route('tasks.index');
     }

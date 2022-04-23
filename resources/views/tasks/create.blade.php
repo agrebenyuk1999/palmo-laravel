@@ -17,7 +17,8 @@
             </div>
             <div class="form-group">
                 <label for="category">Категория</label>
-                <select class="form-select" id="category" name="categories[]" multiple aria-label="multiple select example">
+                <select class="form-select" id="category" name="categories[]" multiple
+                        aria-label="multiple select example">
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
@@ -30,6 +31,9 @@
             <div class="form-group">
                 <label for="image" class="form-label">Изображение</label>
                 <input class="form-control" type="file" id="image" name="image">
+                @error('image')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
             </div>
             <button type="submit" class="btn btn-primary">Создать</button>
         </form>
