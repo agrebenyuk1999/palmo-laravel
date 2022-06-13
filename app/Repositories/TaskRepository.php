@@ -17,12 +17,14 @@ class TaskRepository
         return $this->query()->get();
     }
 
-    public function store(TaskRequest $request, $imagePath)
+    public function store(TaskRequest $request)
     {
         $data = $request->except('_token', 'categories');
-        $data['image'] = $imagePath;
+        $data['image'] = '';
 
         $task = $this->query()->create($data);
         $task->categories()->sync($request->categories);
+
+        return $task;
     }
 }

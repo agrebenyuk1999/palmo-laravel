@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Http\Requests\TaskRequest;
+use App\Jobs\SendTaskInfoJob;
 use App\Repositories\TaskRepository;
+use Illuminate\Support\Facades\Mail;
 
 class TaskService
 {
@@ -21,8 +23,14 @@ class TaskService
 
     public function store(TaskRequest $request)
     {
-        $imagePath = FileHelper::saveImage($request->file('image'));
-        $this->repository->store($request, $imagePath); // сохранили запись в БД
+        $task = $this->repository->store($request); // сохранили запись в БД
+
+        $userInfo = [
+            'email' => auth()->user()->email,
+            'name' => auth()->user()->name,
+        ];
+
+        SendTaskInfoJob::dispatch($task, $userInfo);
     }
 
 }

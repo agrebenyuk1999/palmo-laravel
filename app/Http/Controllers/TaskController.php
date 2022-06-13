@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
+use App\Mail\SendDeleteTaskInfo;
 use App\Models\Category;
 use App\Models\Task;
 use App\Services\TaskService;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -65,7 +67,9 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
-        $task->delete();
+        $taskId = $task->delete();
+
+        Mail::to(auth()->user()->email)->send(new SendDeleteTaskInfo($taskId));
 
         return redirect()->route('tasks.index');
     }
