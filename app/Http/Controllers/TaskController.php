@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\TaskServiceContract;
 use App\Http\Requests\TaskRequest;
 use App\Mail\SendDeleteTaskInfo;
 use App\Models\Category;
@@ -13,7 +14,7 @@ class TaskController extends Controller
 {
     private $service;
 
-    public function __construct(TaskService $service)
+    public function __construct(TaskServiceContract $service)
     {
         $this->service = $service;
     }

@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use App\Events\PostCreated;
-use App\Listeners\PostEmailNotification;
+use App\Events\TaskCreated;
+use App\Listeners\TaskEmailNotification;
+use App\Models\Task;
+use App\Observers\TaskObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        TaskCreated::class => [
+            TaskEmailNotification::class,
+        ],
     ];
 
     /**
@@ -29,6 +34,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Task::observe(new TaskObserver());
     }
 }
